@@ -1,12 +1,12 @@
-# 💬 ChatApp — Real-time Chat với ASP.NET Core SignalR
+# ChatApp — Real-time Chat với ASP.NET Core SignalR
 
 ## Yêu cầu hệ thống
-- **.NET 8 SDK** — tải tại https://dotnet.microsoft.com/download/dotnet/8.0
-- **Visual Studio 2022** (v17.x) hoặc VS Code
+- .NET 8 SDK
+- Visual Studio hoặc VS Code
 
 ---
 
-## ▶️ Cách chạy bằng Visual Studio 2022
+## Cách chạy bằng Visual Studio 2022
 
 1. Mở file **`ChatApp.sln`**
 2. Nhấn **F5** hoặc **Ctrl+F5**
@@ -14,7 +14,7 @@
 
 ---
 
-## ▶️ Cách chạy bằng Command Line (.NET CLI)
+## Cách chạy bằng Command Line (.NET CLI)
 
 ```bash
 cd ChatApp
@@ -24,27 +24,27 @@ Sau đó mở trình duyệt: http://localhost:5000
 
 ---
 
-## 🧪 Test real-time
+## Test real-time
 
 **Mở nhiều tab / nhiều trình duyệt** cùng truy cập `http://localhost:5000`  
 → Tin nhắn sẽ hiện ngay lập tức ở tất cả các tab!
 
 ---
 
-## ✨ Tính năng
+## Tính năng
 
 | Tính năng | Mô tả |
 |-----------|-------|
-| 🔗 WebSocket | Kết nối 2 chiều thời gian thực |
-| 📂 Phòng chat | General, Dev Team, Random |
-| 👥 Online users | Danh sách cập nhật live |
-| ⌨️ Typing indicator | Hiện "đang gõ..." |
-| 🔄 Auto-reconnect | Tự kết nối lại khi mất mạng |
-| 🎨 Dark UI | Giao diện hiện đại |
+| WebSocket | Kết nối 2 chiều thời gian thực |
+| Phòng chat | General, Dev Team, Random |
+| Online users | Danh sách cập nhật live |
+| Typing indicator | Hiện "đang gõ..." |
+| Auto-reconnect | Tự kết nối lại khi mất mạng |
+| Dark UI | Giao diện hiện đại |
 
 ---
 
-## 📁 Cấu trúc project
+## Cấu trúc project
 
 ```
 ChatApp/
@@ -62,7 +62,7 @@ ChatApp/
 
 ---
 
-## 🎓 Công nghệ sử dụng
+## Công nghệ sử dụng
 
 - **ASP.NET Core 8** — Web framework
 - **SignalR** — Real-time communication qua WebSocket
