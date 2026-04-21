@@ -1,0 +1,43 @@
+@model ChatApp.ViewModels.RegisterViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng ký";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ChatApp</title>
+    <link rel="stylesheet" href="~/css/auth.css" />
+</head>
+<body>
+    <div class="auth-card">
+        <h1>Đăng ký</h1>
+        <p class="auth-sub">Tạo tài khoản để vào phòng chat</p>
+        <form method="post" action="/Account/Register">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation"></div>
+
+            <label>Tên hiển thị</label>
+            <input asp-for="DisplayName" />
+            <span asp-validation-for="DisplayName" class="validation"></span>
+
+            <label>Email</label>
+            <input asp-for="Email" />
+            <span asp-validation-for="Email" class="validation"></span>
+
+            <label>Mật khẩu</label>
+            <input asp-for="Password" />
+            <span asp-validation-for="Password" class="validation"></span>
+
+            <label>Nhập lại mật khẩu</label>
+            <input asp-for="ConfirmPassword" />
+            <span asp-validation-for="ConfirmPassword" class="validation"></span>
+
+            <button type="submit">Tạo tài khoản</button>
+        </form>
+        <p class="auth-link">Đã có tài khoản? <a href="/Account/Login">Đăng nhập</a></p>
+    </div>
+</body>
+</html>

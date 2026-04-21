@@ -7,39 +7,7 @@ let typingTimer = null;
 let isTyping = false;
 const roomMessages = {};
 const SYSTEM_MESSAGE_ID_PREFIX = "sys-";
-
-//Login
-const joinBtn = document.getElementById("join-btn");
-const usernameInput = document.getElementById("username-input");
-const roomSelect = document.getElementById("room-select");
-
-joinBtn.addEventListener("click", joinChat);
-usernameInput.addEventListener("keydown", e => { if (e.key === "Enter") joinChat(); });
-
-async function joinChat() {
-    const name = usernameInput.value.trim();
-    if (!name) { usernameInput.focus(); return; }
-
-    currentUser = name;
-    currentRoom = roomSelect.value;
-
-    // Ẩn login, hiện chat
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("chat-screen").style.display = "flex";
-
-    // Cập nhật UI sidebar
-    document.getElementById("user-name-display").textContent = name;
-    document.getElementById("user-avatar").textContent = name.charAt(0).toUpperCase();
-
-    // Đánh dấu room đang active
-    document.querySelectorAll(".room-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.room === currentRoom);
-    });
-    document.getElementById("room-title").textContent = "# " + currentRoom;
-    document.getElementById("message-input").focus();
-
-    await startConnection();
-}
+const currentUserInput = document.getElementById("current-user");
 
 // Kết nối SignalR
 async function startConnection() {
@@ -57,24 +25,24 @@ async function startConnection() {
     });
     connection.onreconnected(async () => {
         setConnectionStatus("connected");
-        appendSystem("✅ Đã kết nối lại!");
-        await connection.invoke("RegisterUser", currentUser);
+        appendSystem("Đã kết nối lại!");
+        await connection.invoke("RegisterUser");
         await connection.invoke("JoinRoom", currentRoom);
     });
     connection.onclose(() => {
         setConnectionStatus("disconnected");
-        appendSystem("❌ Mất kết nối.");
+        appendSystem("Mất kết nối.");
     });
 
     try {
         await connection.start();
         setConnectionStatus("connected");
-        await connection.invoke("RegisterUser", currentUser);
+        await connection.invoke("RegisterUser");
         await connection.invoke("JoinRoom", currentRoom);
         appendSystem(`🎉 Chào mừng ${currentUser}! Bạn đang ở phòng #${currentRoom}`);
     } catch (err) {
         console.error("Lỗi kết nối SignalR:", err);
-        appendSystem("❌ Không thể kết nối. Thử lại sau 5 giây...");
+        appendSystem("Không thể kết nối. Thử lại sau 5 giây...");
         setTimeout(startConnection, 5000);
     }
 }
@@ -146,12 +114,12 @@ msgInput.addEventListener("input", () => {
 
     if (!isTyping) {
         isTyping = true;
-        connection.invoke("SendTypingIndicator", currentUser, currentRoom, true).catch(() => {});
+        connection.invoke("SendTypingIndicator", currentRoom, true).catch(() => {});
     }
     clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
         isTyping = false;
-        connection.invoke("SendTypingIndicator", currentUser, currentRoom, false).catch(() => {});
+        connection.invoke("SendTypingIndicator", currentRoom, false).catch(() => {});
     }, 1500);
 });
 
@@ -167,10 +135,10 @@ async function sendMessage() {
 
     isTyping = false;
     clearTimeout(typingTimer);
-    connection.invoke("SendTypingIndicator", currentUser, currentRoom, false).catch(() => {});
+    connection.invoke("SendTypingIndicator", currentRoom, false).catch(() => {});
 
     try {
-        await connection.invoke("SendMessageToRoom", currentUser, currentRoom, text);
+        await connection.invoke("SendMessageToRoom", currentRoom, text);
     } catch (err) {
         console.error("Lỗi gửi tin:", err);
         appendSystem("❌ Gửi thất bại.");
@@ -281,6 +249,19 @@ function toChatEntry(msg) {
     };
 }
 
+async function initializeChat() {
+    currentUser = (currentUserInput?.value || "").trim();
+    if (!currentUser) {
+        return;
+    }
+
+    document.getElementById("user-name-display").textContent = currentUser;
+    document.getElementById("user-avatar").textContent = currentUser.charAt(0).toUpperCase();
+    document.getElementById("room-title").textContent = "# " + currentRoom;
+    document.getElementById("message-input").focus();
+    await startConnection();
+}
+
 function setConnectionStatus(status) {
     const badge = document.getElementById("conn-badge");
     badge.className = "conn-badge " + status;
@@ -294,3 +275,5 @@ function escapeHtml(str) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
 }
+
+initializeChat();

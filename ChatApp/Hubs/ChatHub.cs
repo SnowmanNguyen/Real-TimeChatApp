@@ -2,10 +2,12 @@ using ChatApp.Data;
 using Microsoft.AspNetCore.SignalR;
 using ChatApp.Models;
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private static readonly ConcurrentDictionary<string, string> _connectedUsers = new();
@@ -18,6 +20,7 @@ namespace ChatApp.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            await RegisterUser();
             await Clients.All.SendAsync("UserConnected", Context.ConnectionId);
             await base.OnConnectedAsync();
         }
@@ -33,16 +36,18 @@ namespace ChatApp.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task RegisterUser(string userName)
+        public async Task RegisterUser()
         {
+            var userName = Context.User?.Identity?.Name ?? "Anonymous";
             _connectedUsers[Context.ConnectionId] = userName;
             await Groups.AddToGroupAsync(Context.ConnectionId, "General");
             await Clients.Others.SendAsync("UserJoined", userName);
             await UpdateOnlineUsers();
         }
 
-        public async Task SendMessageToRoom(string user, string roomName, string message)
+        public async Task SendMessageToRoom(string roomName, string message)
         {
+            var user = Context.User?.Identity?.Name ?? "Anonymous";
             var chatMessage = new ChatMessage
             {
                 User = user,
@@ -75,8 +80,9 @@ namespace ChatApp.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
         }
 
-        public async Task SendTypingIndicator(string user, string roomName, bool isTyping)
+        public async Task SendTypingIndicator(string roomName, bool isTyping)
         {
+            var user = Context.User?.Identity?.Name ?? "Anonymous";
             await Clients.OthersInGroup(roomName).SendAsync("UserTyping", user, isTyping);
         }
 
