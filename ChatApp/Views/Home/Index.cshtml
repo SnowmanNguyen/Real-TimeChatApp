@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "ChatApp - Real-time";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💬 ChatApp — SignalR</title>
+    <link rel="stylesheet" href="~/css/chat.css" />
+</head>
+<body>
+
+<!--MÀN HÌNH ĐĂNG NHẬP-->
+<div id="login-screen" class="login-overlay">
+    <div class="login-card">
+        <div class="login-logo">💬</div>
+        <h1>ChatApp</h1>
+        <p class="login-sub">Ứng dụng chat real-time với ASP.NET Core SignalR</p>
+        <div class="input-group">
+            <input type="text" id="username-input"
+                   placeholder="Nhập tên của bạn..."
+                   maxlength="20" autocomplete="off" />
+        </div>
+        <div class="input-group">
+            <select id="room-select">
+                <option value="General">🌐 General</option>
+                <option value="Dev">💻 Dev Team</option>
+                <option value="Random">🎲 Random</option>
+            </select>
+        </div>
+        <button id="join-btn" class="btn-primary">Tham gia Chat →</button>
+        <p class="login-hint">Mở nhiều tab để test real-time!</p>
+    </div>
+</div>
+
+<!--MÀN HÌNH CHAT-->
+<div id="chat-screen" class="chat-layout" style="display:none">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-text">💬 ChatApp</span>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="section-label">PHÒNG CHAT</div>
+            <nav class="room-nav" id="room-nav">
+                <button class="room-btn active" data-room="General">🌐 General</button>
+                <button class="room-btn" data-room="Dev">💻 Dev Team</button>
+                <button class="room-btn" data-room="Random">🎲 Random</button>
+            </nav>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="section-label">ONLINE — <span id="online-count">0</span></div>
+            <ul id="online-users" class="user-list"></ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="current-user">
+                <span class="avatar" id="user-avatar">?</span>
+                <span id="user-name-display">...</span>
+            </div>
+            <div class="conn-badge" id="conn-badge" title="Trạng thái kết nối">●</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CHAT -->
+    <main class="chat-main">
+        <header class="chat-header">
+            <div>
+                <div class="chat-room-name" id="room-title"># General</div>
+                <div class="chat-room-desc">Chat thời gian thực qua WebSocket</div>
+            </div>
+            <div class="header-right">
+                <span id="typing-indicator" class="typing-indicator"></span>
+            </div>
+        </header>
+
+        <div class="messages" id="message-list"></div>
+
+        <footer class="chat-footer">
+            <div class="input-bar">
+                <input type="text" id="message-input"
+                       placeholder="Nhập tin nhắn... (Enter để gửi)"
+                       maxlength="500" autocomplete="off" />
+                <button id="send-btn" class="send-btn" title="Gửi">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<script src="~/js/chat.js"></script>
+</body>
+</html>
